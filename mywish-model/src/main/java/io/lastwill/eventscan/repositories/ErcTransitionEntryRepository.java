@@ -1,33 +1,19 @@
 package io.lastwill.eventscan.repositories;
 
-import io.lastwill.eventscan.model.DucatusTransitionEntry;
-import io.lastwill.eventscan.model.TokenInfo;
-import io.lastwill.eventscan.model.TransferStatus;
+import io.lastwill.eventscan.model.ErcTransitionEntry;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigInteger;
 import java.util.List;
 
-public interface ErcTransitionEntryRepository extends CrudRepository<DucatusTransitionEntry, Long> {
+
+public interface ErcTransitionEntryRepository extends TransitionEntryRepository<ErcTransitionEntry> {
     @Transactional
-    @Query("update DucatusTransitionEntry e set e.txHash = :txHash")
+    @Query("update ErcTransitionEntry e set e.txHash = :txHash")
     boolean setTxHash(@Param("txHash") String txHash);
 
-    List<DucatusTransitionEntry> findAllByTransferStatus(@Param("transferStatus") TransferStatus status);
+    @Query("select e from ErcTransitionEntry e where lower(e.ethTxHash) = lower(:ethTxHash)")
+    ErcTransitionEntry findByEthTxHash(@Param("ethTxHash") String hash);
 
-    @Query("select e from DucatusTransitionEntry e where lower(e.ethTxHash) = lower(:ethTxHash)")
-    DucatusTransitionEntry findByEthTxHash(@Param("ethTxHash") String hash);
-
-    List<DucatusTransitionEntry> findByTransferStatusEquals(
-            @Param("transferStatus") TransferStatus status);
-
-    DucatusTransitionEntry findFirstByTransferStatusEqualsAndTokenEqualsAndAmountLessThan(
-            @Param("transferStatus") TransferStatus status,
-            @Param("connectEntry") TokenInfo connectEntry,
-            @Param("amount") BigInteger amount);
-
-    DucatusTransitionEntry findFirstByTransferStatus(@Param("transferStatus") TransferStatus status);
 }

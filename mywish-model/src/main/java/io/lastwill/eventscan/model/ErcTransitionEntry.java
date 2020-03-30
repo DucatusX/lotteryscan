@@ -11,28 +11,14 @@ import java.math.BigInteger;
 @Setter
 @Entity
 @Table(name = "erc_transition")
-public class ErcTransitionEntry {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
-    private Long id;
-
-    @Column(name = "tx_hash")
-    private String txHash;
-
-    @ManyToOne(optional = false)
+public class ErcTransitionEntry extends TransitionEntry {
+    @ManyToOne(optional = true)
     private TokenInfo token;
-
     private BigInteger amount;
 
-    @Column(name = "transfer_status")
-    @Enumerated(EnumType.STRING)
-    private TransferStatus transferStatus;
-
     public ErcTransitionEntry(TokenInfo token, BigInteger amount, String txHash) {
+        super(txHash);
         this.token = token;
         this.amount = amount;
-        this.txHash = txHash;
     }
-
 }

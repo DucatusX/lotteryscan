@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum CryptoCurrency {
-    ERC(18, "GOLD"),
+    DUC(18),
     DUCX(8);
 
     private final int decimals;
