@@ -2,16 +2,16 @@ package io.lastwill.eventscan.services;
 
 import io.lastwill.eventscan.model.TokenInfo;
 import io.lastwill.eventscan.repositories.TokenEntryRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-@ConditionalOnBean(TokenInfo.class)
 @Component
+@Slf4j
 public class DataBaseIdFiller {
     @Autowired
     RandomMd5Generator generator;
@@ -24,10 +24,13 @@ public class DataBaseIdFiller {
     public void fillDataBase() {
         List<TokenInfo> tokens = tokenRepository.findAll();
         if (tokens != null && !tokens.isEmpty()) {
+            log.info("Token is not empty, skip filling");
             return;
         }
+        log.info("Token DB is empty start filling");
         generator.generateMoreMd5Random(generateValue).forEach(userId -> {
             tokenRepository.save(new TokenInfo(userId));
         });
+        log.info("Token DB filling completed!");
     }
 }

@@ -1,5 +1,6 @@
 package io.lastwill.eventscan.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Component;
 
@@ -7,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
+@Slf4j
 public class RandomMd5Generator {
     private static int MAX_TRY_GENERATE = 100;
 
@@ -46,8 +48,10 @@ public class RandomMd5Generator {
             }
             if (result.size() < generateValue) {
                 if (countGenerate >= MAX_TRY_GENERATE) {
+                    log.info("Try generate id more than {}. Can't generate with unique", MAX_TRY_GENERATE);
                     result.clear();
                 } else {
+                    log.info("Can't generate unique id. from {} generate {} unique. Try {} times", generateValue, result.size(), countGenerate + 1);
                     result = this.generateMoreMd5Random(generateValue, ++countGenerate);
                 }
             }
