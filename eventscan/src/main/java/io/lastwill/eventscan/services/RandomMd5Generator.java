@@ -1,11 +1,12 @@
 package io.lastwill.eventscan.services;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.Set;
 
+@Component
 public class RandomMd5Generator {
     private static int MAX_TRY_GENERATE = 100;
 
@@ -52,10 +53,5 @@ public class RandomMd5Generator {
             }
         }
         return result;
-    }
-
-    @PostConstruct
-    private void fillDataBase() {
-
     }
 }
