@@ -29,7 +29,7 @@ public class Application {
     public static void main(String[] args) {
         new SpringApplicationBuilder()
                 .addCommandLineProperties(true)
-                .web(true)
+                .web(false)
                 .sources(Application.class)
                 .main(Application.class)
                 .run(args);

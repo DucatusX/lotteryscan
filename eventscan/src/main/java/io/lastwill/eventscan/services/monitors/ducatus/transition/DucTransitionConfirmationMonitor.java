@@ -1,14 +1,58 @@
 package io.lastwill.eventscan.services.monitors.ducatus.transition;
 
 import io.lastwill.eventscan.model.NetworkType;
+import io.lastwill.eventscan.model.TransferStatus;
 import io.lastwill.eventscan.repositories.DucatusTransitionEntryRepository;
+import io.mywish.blockchain.WrapperTransaction;
+import io.mywish.scanner.model.NewBlockEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
-public class DucTransitionConfirmationMonitor extends AbstractConfirmationMonitor {
+@Slf4j
+public class DucTransitionConfirmationMonitor{
+    private final DucatusTransitionEntryRepository transitionEntryRepository;
+    private final NetworkType networkType = NetworkType.DUCATUS_MAINNET;
+
     public DucTransitionConfirmationMonitor(
             @Autowired DucatusTransitionEntryRepository transitionEntryRepository) {
-        super(transitionEntryRepository, NetworkType.DUCATUS_MAINNET);
+        this.transitionEntryRepository = transitionEntryRepository;
+    }
+
+    @EventListener(NewBlockEvent.class)
+    public void doScan(NewBlockEvent event) {
+        if (event.getNetworkType() != networkType) {
+            return;
+        }
+        List<String> txHashes = getTxHashes(event);
+        if (txHashes.isEmpty()) {
+            return;
+        }
+        transitionEntryRepository
+                .findAllByTransferStatus(TransferStatus.WAIT_FOR_CONFIRM)
+                .stream()
+                .filter(entry -> txHashes.contains(entry.getTxHash()))
+                .forEach(entry -> {
+                    entry.setTransferStatus(TransferStatus.OK);
+                    transitionEntryRepository.save(entry);
+                    log.debug("{}: Transaction {} confirmed", this.getClass().getSimpleName(), entry.getTxHash());
+                });
+    }
+
+    protected List<String> getTxHashes(NewBlockEvent newBlockEvent) {
+        return newBlockEvent
+                .getTransactionsByAddress()
+                .values()
+                .stream()
+                .flatMap(Collection::stream)
+                .map(WrapperTransaction::getHash)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

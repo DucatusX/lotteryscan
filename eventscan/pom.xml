@@ -12,12 +12,10 @@
     <artifactId>eventscan</artifactId>
 
     <properties>
-        <db-url>jdbc:postgresql://localhost/daps</db-url>
-        <db-user>daps</db-user>
-        <db-password>daps</db-password>
+        <db-url>jdbc:postgresql://localhost/lottery</db-url>
+        <db-user>lottery</db-user>
+        <db-password>lottery</db-password>
         <web3-base-url>http://localhost:8545/</web3-base-url>
-        <backend-base-url>http://demo.mywillplatform.io/api/v1/payment_notify</backend-base-url>
-        <token-address>0x1b22c32cd936cb97c28c5690a0695a82abf688e6</token-address>
     </properties>
 
     <dependencies>
@@ -141,7 +139,7 @@
                 <configuration>
                     <mainClass>io.lastwill.eventscan.Application</mainClass>
                     <executable>true</executable>
-                    <finalName>daps</finalName>
+                    <finalName>lottery</finalName>
                 </configuration>
                 <executions>
                     <execution>

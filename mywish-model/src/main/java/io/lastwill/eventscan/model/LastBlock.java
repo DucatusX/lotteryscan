@@ -9,8 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "last_block")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class LastBlock  {
+public class LastBlock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
@@ -22,4 +21,9 @@ public class LastBlock  {
 
     @Column(name = "block_number", nullable = false)
     private Long blockNumber;
+
+    public LastBlock(NetworkType networkType, Long blockNumber) {
+        this.network = networkType;
+        this.blockNumber = blockNumber;
+    }
 }
