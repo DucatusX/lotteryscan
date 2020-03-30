@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import devcsrj.okhttp3.logging.HttpLoggingInterceptor;
-import io.lastwill.eventscan.events.EventModule;
 import io.mywish.scanner.ScannerModule;
 import okhttp3.OkHttpClient;
 import org.apache.http.client.config.CookieSpecs;
@@ -23,7 +22,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
-@Import({ScannerModule.class, EventModule.class, RestModule.class})
+@Import({ScannerModule.class})
 @EntityScan(basePackageClasses = {Application.class, Jsr310JpaConverters.class})
 @EnableScheduling
 public class Application {

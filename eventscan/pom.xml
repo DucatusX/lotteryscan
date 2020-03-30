@@ -38,11 +38,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>mywish-events</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>blockchain</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -56,12 +51,6 @@
             <artifactId>blockchain-web3</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>rest</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <!--<dependency>-->
         <!--<groupId>${project.groupId}</groupId>-->
         <!--<artifactId>joule</artifactId>-->
