@@ -22,9 +22,9 @@ import org.web3j.protocol.http.HttpService;
 @ComponentScan
 public class Web3BCModule {
     @ConditionalOnProperty(name = "io.lastwill.eventscan.web3-url.ethereum")
-    @Bean(name = NetworkType.ETHEREUM_MAINNET_VALUE)
+    @Bean(name = NetworkType.DUCATUSX_MAINNET_VALUE)
     public Web3Network ethNetMain(Web3j web3j) {
-        return new Web3Network(NetworkType.ETHEREUM_MAINNET, web3j);
+        return new Web3Network(NetworkType.DUCATUSX_MAINNET, web3j);
     }
 
     @Bean
@@ -38,13 +38,13 @@ public class Web3BCModule {
     public LastBlockPersister ethMainnetLastBlockPersister(
             LastBlockRepository lastBlockRepository
     ) {
-        return new LastBlockDbPersister(NetworkType.ETHEREUM_MAINNET, lastBlockRepository, null);
+        return new LastBlockDbPersister(NetworkType.DUCATUSX_MAINNET, lastBlockRepository, null);
     }
 
-    @ConditionalOnBean(name = NetworkType.ETHEREUM_MAINNET_VALUE)
+    @ConditionalOnBean(name = NetworkType.DUCATUSX_MAINNET_VALUE)
     @Bean
     public Web3Scanner ethScannerMain(
-            final @Qualifier(NetworkType.ETHEREUM_MAINNET_VALUE) Web3Network network,
+            final @Qualifier(NetworkType.DUCATUSX_MAINNET_VALUE) Web3Network network,
             final @Qualifier("ethMainnetLastBlockPersister") LastBlockPersister lastBlockPersister,
             final @Value("${etherscanner.polling-interval-ms:5000}") Long pollingInterval,
             final @Value("${etherscanner.commit-chain-length:5}") Integer commitmentChainLength

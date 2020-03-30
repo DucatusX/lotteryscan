@@ -1,4 +1,4 @@
-package io.lastwill.eventscan.services.monitors.dapsswap.transition;
+package io.lastwill.eventscan.services.monitors.ducatus.transition;
 
 import io.lastwill.eventscan.model.NetworkType;
 import io.lastwill.eventscan.repositories.ErcTransitionEntryRepository;

@@ -1,4 +1,4 @@
-package io.mywish.daps.blockchain.services;
+package io.mywish.ducatus.blockchain.services;
 
 import io.mywish.blockchain.WrapperBlock;
 import io.mywish.blockchain.WrapperTransaction;
@@ -12,8 +12,8 @@ import org.springframework.util.MultiValueMap;
 import java.util.HashMap;
 
 @Slf4j
-public class DapsScanner extends ScannerPolling {
-    public DapsScanner(DapsNetwork network, LastBlockPersister lastBlockPersister, Long pollingInterval, Integer commitmentChainLength) {
+public class DucScanner extends ScannerPolling {
+    public DucScanner(DucNetwork network, LastBlockPersister lastBlockPersister, Long pollingInterval, Integer commitmentChainLength) {
         super(network, lastBlockPersister, pollingInterval, commitmentChainLength);
     }
 
@@ -28,7 +28,16 @@ public class DapsScanner extends ScannerPolling {
             return;
         }
         block.getTransactions()
-                .forEach(transaction -> addressTransactions.add(null, transaction));
+                .forEach(transaction -> {
+                    transaction.getOutputs().forEach(output -> {
+                        addressTransactions.add(
+                                output.getAddress(),
+                                transaction
+                        );
+                    });
+//                    eventPublisher.publish(new NewTransactionEvent(networkType, block, output));
+                });
+
         eventPublisher.publish(new NewBlockEvent(network.getType(), block, addressTransactions));
     }
 }

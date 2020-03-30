@@ -48,7 +48,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>blockchain-daps</artifactId>
+            <artifactId>blockchain-ducatus</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
