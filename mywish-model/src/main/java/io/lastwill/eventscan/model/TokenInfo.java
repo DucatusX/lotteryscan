@@ -28,11 +28,10 @@ public class TokenInfo {
     @Column(name = "ducatus_address")
     private String ducatuAddress;
 
-    @Setter
-    @Column(name = "register")
-    private boolean register;
+    private String tokenType;
 
-    public TokenInfo(String userId) {
+    public TokenInfo(String userId, TokenType type) {
         this.userId = userId;
+        this.tokenType = type.getName();
     }
 }

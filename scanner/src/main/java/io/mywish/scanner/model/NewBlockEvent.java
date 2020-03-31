@@ -1,9 +1,9 @@
 package io.mywish.scanner.model;
 
-import io.lastwill.eventscan.events.model.BaseEvent;
 import io.lastwill.eventscan.model.NetworkType;
 import io.mywish.blockchain.WrapperBlock;
 import io.mywish.blockchain.WrapperTransaction;
+import io.mywish.scanner.services.BaseEvent;
 import lombok.Getter;
 import org.springframework.util.MultiValueMap;
 

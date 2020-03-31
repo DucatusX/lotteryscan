@@ -38,7 +38,7 @@ public class DucXTransitionConfirmationMonitor {
                 .stream()
                 .filter(entry -> txHashes.contains(entry.getTxHash()))
                 .forEach(entry -> {
-                    entry.setTransferStatus(TransferStatus.OK);
+                    entry.setTransferStatus(TransferStatus.CONFIRMED);
                     transitionEntryRepository.save(entry);
                     log.debug("{}: Transaction {} confirmed", this.getClass().getSimpleName(), entry.getTxHash());
                 });

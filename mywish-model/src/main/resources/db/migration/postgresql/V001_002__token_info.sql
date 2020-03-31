@@ -3,6 +3,6 @@ CREATE TABLE token_info (
   user_id VARCHAR(50) ,
   ducatus_address VARCHAR(120) ,
   ducatux_address VARCHAR(120),
-  register BOOLEAN,
+  token_type VARCHAR(20),
   unique (user_id)
                                  );

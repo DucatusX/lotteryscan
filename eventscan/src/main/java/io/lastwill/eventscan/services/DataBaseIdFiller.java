@@ -1,6 +1,7 @@
 package io.lastwill.eventscan.services;
 
 import io.lastwill.eventscan.model.TokenInfo;
+import io.lastwill.eventscan.model.TokenType;
 import io.lastwill.eventscan.repositories.TokenEntryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,10 @@ public class DataBaseIdFiller {
     RandomMd5Generator generator;
     @Autowired
     TokenEntryRepository tokenRepository;
-    @Value("${io.lastwill.eventscan.generate-value}")
-    private int generateValue;
+    @Value("${io.lastwill.eventscan.8gramm-generate-value}")
+    private int eightGramValue;
+    @Value("${io.lastwill.eventscan.10gramm-generate-value}")
+    private int tenGramValue;
 
     @PostConstruct
     public void fillDataBase() {
@@ -28,8 +31,12 @@ public class DataBaseIdFiller {
             return;
         }
         log.info("Token DB is empty start filling");
-        generator.generateMoreMd5Random(generateValue).forEach(userId -> {
-            tokenRepository.save(new TokenInfo(userId));
+        generator.generateMoreMd5Random(eightGramValue).forEach(userId -> {
+            tokenRepository.save(new TokenInfo(userId, TokenType.SMALL));
+        });
+
+        generator.generateMoreMd5Random(tenGramValue).forEach(userId -> {
+            tokenRepository.save(new TokenInfo(userId, TokenType.BIG));
         });
         log.info("Token DB filling completed!");
     }
