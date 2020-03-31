@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@Table(name = "token_info")
+@Table(name = "coin_info_tokeninfo")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenInfo {
     @Id

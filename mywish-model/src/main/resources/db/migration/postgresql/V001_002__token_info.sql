@@ -1,4 +1,4 @@
-CREATE TABLE token_info (
+CREATE TABLE coin_info_tokeninfo (
   id SERIAL PRIMARY KEY ,
   user_id VARCHAR(50) ,
   ducatus_address VARCHAR(120) ,

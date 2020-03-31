@@ -9,7 +9,7 @@ import java.math.BigInteger;
 @Getter
 @Setter
 @Entity
-@Table(name = "ducatus_transition")
+@Table(name = "transfer_ducatustransfer")
 public class DucatusTransitionEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

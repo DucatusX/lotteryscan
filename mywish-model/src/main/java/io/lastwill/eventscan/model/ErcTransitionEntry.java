@@ -10,7 +10,7 @@ import java.math.BigInteger;
 @Getter
 @Setter
 @Entity
-@Table(name = "erc_transition")
+@Table(name = "transfer_erctransfer")
 public class ErcTransitionEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
