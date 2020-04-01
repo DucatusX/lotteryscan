@@ -25,11 +25,6 @@ public interface DucatusTransitionEntryRepository extends CrudRepository<Ducatus
     List<DucatusTransitionEntry> findByTransferStatusEquals(
             @Param("transferStatus") TransferStatus status);
 
-    DucatusTransitionEntry findFirstByTransferStatusEqualsAndTokenEqualsAndAmountLessThan(
-            @Param("transferStatus") TransferStatus status,
-            @Param("connectEntry") TokenInfo connectEntry,
-            @Param("amount") BigInteger amount);
-
     DucatusTransitionEntry findFirstByTransferStatus(@Param("transferStatus") TransferStatus status);
 
 }

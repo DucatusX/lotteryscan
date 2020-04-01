@@ -41,11 +41,11 @@ public class DataBaseIdFiller {
         }
         log.info("Token DB is empty start filling");
         generator.generateMoreMd5Random(eightGramValue).forEach(userId -> {
-            tokenRepository.save(new TokenInfo(userId, TokenType.SMALL));
+            tokenRepository.save(new TokenInfo(userId, TokenType.SMALL, false));
         });
 
         generator.generateMoreMd5Random(tenGramValue).forEach(userId -> {
-            tokenRepository.save(new TokenInfo(userId, TokenType.BIG));
+            tokenRepository.save(new TokenInfo(userId, TokenType.BIG, false));
         });
         log.info("Token DB filling completed!");
         writeOnFile();

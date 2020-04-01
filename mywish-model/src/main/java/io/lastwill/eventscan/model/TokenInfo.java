@@ -21,17 +21,21 @@ public class TokenInfo {
     private String userId;
 
     @Setter
-    @Column(name = "ducatux_address")
+    @Column(name = "ducatusx_address")
     private String ducatusxAddress;
 
     @Setter
     @Column(name = "ducatus_address")
     private String ducatuAddress;
 
+    @Column(name = "token_type")
     private String tokenType;
 
-    public TokenInfo(String userId, TokenType type) {
+    private Boolean isActive;
+
+    public TokenInfo(String userId, TokenType type, Boolean isActive) {
         this.userId = userId;
         this.tokenType = type.getName();
+        this.isActive = isActive;
     }
 }

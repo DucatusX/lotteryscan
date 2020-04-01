@@ -12,9 +12,9 @@
     <artifactId>eventscan</artifactId>
 
     <properties>
-        <db-url>jdbc:postgresql://localhost/lottery</db-url>
-        <db-user>lottery</db-user>
-        <db-password>lottery</db-password>
+        <db-url>jdbc:postgresql://localhost/duc_gold_coin</db-url>
+        <db-user>gold_coin</db-user>
+        <db-password>h6pcrU44</db-password>
         <web3-base-url>http://localhost:8545/</web3-base-url>
     </properties>
 

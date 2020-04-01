@@ -24,11 +24,6 @@ public interface ErcTransitionEntryRepository extends CrudRepository<ErcTransiti
     List<ErcTransitionEntry> findByTransferStatusEquals(
             @Param("transferStatus") TransferStatus status);
 
-    ErcTransitionEntry findFirstByTransferStatusEqualsAndTokenEqualsAndAmountLessThan(
-            @Param("transferStatus") TransferStatus status,
-            @Param("connectEntry") TokenInfo connectEntry,
-            @Param("amount") BigInteger amount);
-
     ErcTransitionEntry findFirstByTransferStatus(@Param("transferStatus") TransferStatus status);
 
 }

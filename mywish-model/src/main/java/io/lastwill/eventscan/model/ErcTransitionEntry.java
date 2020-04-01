@@ -24,13 +24,10 @@ public class ErcTransitionEntry {
     @Column(name = "transfer_status")
     @Enumerated(EnumType.STRING)
     private TransferStatus transferStatus;
-    @ManyToOne(optional = true)
-    private TokenInfo token;
     private BigInteger amount;
 
-    public ErcTransitionEntry(TokenInfo token, BigInteger amount, String txHash) {
+    public ErcTransitionEntry(BigInteger amount, String txHash) {
         this.txHash = txHash;
-        this.token = token;
         this.amount = amount;
     }
 }
