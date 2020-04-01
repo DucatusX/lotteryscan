@@ -13,6 +13,9 @@ public interface TokenEntryRepository extends CrudRepository<TokenInfo, Long> {
 
     List<TokenInfo> findAllByDucatusxAddressOrderByIdDesc(@Param("ducatusxAddress") String ducatusxAddress);
 
+    @Query("select t.userId from TokenInfo t where  t.tokenType = :tokenType")
+    List<String>findAllIdByTokenType(@Param("tokenType")String tokenType);
+
     List<TokenInfo> findAll();
 
     TokenInfo findFirstByUserId(@Param("userId") String userId);
