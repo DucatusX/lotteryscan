@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-@Component
+//@Component
 @Slf4j
 public class DataBaseIdFiller {
     @Autowired

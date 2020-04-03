@@ -10,6 +10,7 @@ import java.math.BigInteger;
 @Setter
 @Entity
 @Table(name = "transfer_ducatustransfer")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DucatusTransitionEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

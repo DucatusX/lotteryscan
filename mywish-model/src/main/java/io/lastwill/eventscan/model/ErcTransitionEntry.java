@@ -1,6 +1,8 @@
 package io.lastwill.eventscan.model;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,6 +13,7 @@ import java.math.BigInteger;
 @Setter
 @Entity
 @Table(name = "transfer_erctransfer")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ErcTransitionEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

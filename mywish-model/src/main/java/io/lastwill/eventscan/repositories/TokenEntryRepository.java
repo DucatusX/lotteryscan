@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public interface TokenEntryRepository extends CrudRepository<TokenInfo, Long> {
@@ -14,7 +16,10 @@ public interface TokenEntryRepository extends CrudRepository<TokenInfo, Long> {
     List<TokenInfo> findAllByDucatusxAddressOrderByIdDesc(@Param("ducatusxAddress") String ducatusxAddress);
 
     @Query("select t.userId from TokenInfo t where  t.tokenType = :tokenType")
-    List<String>findAllIdByTokenType(@Param("tokenType")String tokenType);
+    List<String> findAllIdByTokenType(@Param("tokenType") String tokenType);
+
+    @Query("select t from TokenInfo t where t.userId in :userId")
+    List<TokenInfo> findAllBySecretCode(@Param("userId") Collection<String> userId);
 
     List<TokenInfo> findAll();
 
