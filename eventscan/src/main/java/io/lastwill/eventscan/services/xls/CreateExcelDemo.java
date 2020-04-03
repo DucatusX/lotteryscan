@@ -9,6 +9,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Stream;
 
 @Component
 @Slf4j
@@ -73,30 +75,31 @@ public class CreateExcelDemo {
             String cellName = cell.getStringCellValue();
             switch (cellName) {
                 case secretCode: {
-                    rowByType.put(secretCode, cell.getRowIndex());
+                    rowByType.put(secretCode, cell.getColumnIndex());
+                    break;
                 }
                 case weight: {
-                    rowByType.put(weight, cell.getRowIndex());
+                    rowByType.put(weight, cell.getColumnIndex());
                     break;
                 }
                 case country: {
-                    rowByType.put(country, cell.getRowIndex());
+                    rowByType.put(country, cell.getColumnIndex());
                     break;
                 }
                 case certifiedAssayer: {
-                    rowByType.put(certifiedAssayer, cell.getRowIndex());
+                    rowByType.put(certifiedAssayer, cell.getColumnIndex());
                     break;
                 }
                 case purchaseDate: {
-                    rowByType.put(purchaseDate, cell.getRowIndex());
+                    rowByType.put(purchaseDate, cell.getColumnIndex());
                     break;
                 }
                 case goldPrice: {
-                    rowByType.put(goldPrice, cell.getRowIndex());
+                    rowByType.put(goldPrice, cell.getColumnIndex());
                     break;
                 }
                 case ducValue: {
-                    rowByType.put(ducValue, cell.getRowIndex());
+                    rowByType.put(ducValue, cell.getColumnIndex());
                     break;
                 }
                 default:
@@ -113,7 +116,9 @@ public class CreateExcelDemo {
                 return;
             }
             String code = codeIterator.next();
-            Cell cell = sheet.getRow(i).getCell(rowByType.get(secretCode));
+            int secretCell = rowByType.get(secretCode);
+            Row row = sheet.getRow(i);
+            Cell cell = row.createCell(secretCell, CellType.STRING);
             cell.setCellValue(code);
 
         }
@@ -139,7 +144,8 @@ public class CreateExcelDemo {
         for (int i = 1; i <= rows; i++) {
             HSSFRow row = sheet.getRow(i);
             String tUserId = row.getCell(rowByType.get(secretCode)).getStringCellValue();
-            TokenType tTokenType = TokenType.valueOf(row.getCell(rowByType.get(weight)).getStringCellValue());
+            String tokenName = row.getCell(rowByType.get(weight)).getStringCellValue();
+            TokenType tTokenType = Stream.of(TokenType.values()).filter(t -> t.getName().equalsIgnoreCase(tokenName)).findFirst().get();
             String tAssayer = row.getCell(rowByType.get(certifiedAssayer)).getStringCellValue();
             String tCountry = row.getCell(rowByType.get(country)).getStringCellValue();
             String tPurchaseDate = row.getCell(rowByType.get(purchaseDate)).getStringCellValue();
