@@ -54,6 +54,10 @@ public class CreateExcelDemo {
 
     public void addSecretCode() throws IOException {
         File file = new File(openPath);
+        if (!file.exists()) {
+            log.info("File for configure secret code is not exist");
+            return;
+        }
         // Read XSL file
         FileInputStream inputStream = new FileInputStream(file);
 
@@ -122,15 +126,21 @@ public class CreateExcelDemo {
             cell.setCellValue(code);
 
         }
+        log.info("Secret code successfully generate");
         inputStream.close();
         // Write File
         FileOutputStream out = new FileOutputStream(file);
         workbook.write(out);
         out.close();
+        log.info("File with source code save");
     }
 
     private void saveIntoDb() throws IOException {
         File file = new File(openPath);
+        if (!file.exists()) {
+            log.info("File for saveDB is not exist");
+            return;
+        }
         // Read XSL file
         FileInputStream inputStream = new FileInputStream(file);
 
@@ -155,6 +165,7 @@ public class CreateExcelDemo {
             tokens.add(new TokenInfo(tUserId, tTokenType, false, tAssayer, tCountry, tDucValue, tGoldPrice, tPurchaseDate));
         }
         tokenRepository.save(tokens);
+        log.info("All new Token Info entry successfully save into DB");
         inputStream.close();
         // Write File
         FileOutputStream out = new FileOutputStream(savePath);
@@ -163,11 +174,14 @@ public class CreateExcelDemo {
         //Delete old File
         File fileForDelete = new File(openPath);
         fileForDelete.delete();
+        log.info("New File with Secret code save into {}", savePath);
+        log.info("Old file was  dropped {}", savePath);
     }
 
     public Set<String> generateUnique(int rows, int count) {
         Set<String> result = new HashSet<>();
         if (count > stopGenerate) {
+            log.warn("Can't generate unique code more than {} times", stopGenerate);
             return result;
         }
         Set<String> codes = generator.generateMoreMd5Random(rows);
@@ -177,6 +191,7 @@ public class CreateExcelDemo {
         } else {
             result = codes;
         }
+        log.info("Secret code successfully generated");
         return result;
     }
 }
