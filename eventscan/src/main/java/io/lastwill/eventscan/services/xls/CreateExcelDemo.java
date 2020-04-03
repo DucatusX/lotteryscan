@@ -1,9 +1,11 @@
 package io.lastwill.eventscan.services.xls;
 
 import io.lastwill.eventscan.model.TokenInfo;
+import io.lastwill.eventscan.model.TokenType;
 import io.lastwill.eventscan.repositories.TokenEntryRepository;
 import io.lastwill.eventscan.services.RandomMd5Generator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,18 +19,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Component
 @Slf4j
 public class CreateExcelDemo {
     private final String weight = "Weight";
-    private final String countryOfOrigin = "Country of Origin";
+    private final String country = "Country";
     private final String certifiedAssayer = "Certified Assayer";
     private final String purchaseDate = "Purchase date";
     private final String secretCode = "Secret Code";
-    private final String goldValueAtPurchaseDate = "Gold value at Purchase Date";
-    private final String DUCvalue = "DUC value";
+    private final String goldPrice = "Gold price";
+    private final String ducValue = "DUC value";
     @Value("${io.lastwill.eventscan.open-file-name}")
     private String openPath;
     @Value("${io.lastwill.eventscan.save-file-name}")
@@ -76,8 +79,8 @@ public class CreateExcelDemo {
                     rowByType.put(weight, cell.getRowIndex());
                     break;
                 }
-                case countryOfOrigin: {
-                    rowByType.put(countryOfOrigin, cell.getRowIndex());
+                case country: {
+                    rowByType.put(country, cell.getRowIndex());
                     break;
                 }
                 case certifiedAssayer: {
@@ -88,12 +91,12 @@ public class CreateExcelDemo {
                     rowByType.put(purchaseDate, cell.getRowIndex());
                     break;
                 }
-                case goldValueAtPurchaseDate: {
-                    rowByType.put(goldValueAtPurchaseDate, cell.getRowIndex());
+                case goldPrice: {
+                    rowByType.put(goldPrice, cell.getRowIndex());
                     break;
                 }
-                case DUCvalue: {
-                    rowByType.put(DUCvalue, cell.getRowIndex());
+                case ducValue: {
+                    rowByType.put(ducValue, cell.getRowIndex());
                     break;
                 }
                 default:
@@ -122,24 +125,38 @@ public class CreateExcelDemo {
     }
 
     private void saveIntoDb() throws IOException {
-//        File file = new File(openPath);
-//        // Read XSL file
-//        FileInputStream inputStream = new FileInputStream(file);
-//
-//        // Get the workbook instance for XLS file
-//        HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
-//
-//        // Get first sheet from the workbook
-//        HSSFSheet sheet = workbook.getSheetAt(0);
-//        Iterator<Row> rowIterator = sheet.iterator();
-//        int rows = sheet.getLastRowNum();
-//        Iterator<Cell> cellIterator = rowIterator.next().cellIterator();
-//        List<TokenInfo> tokens = new ArrayList<>();
-//        for (int i = 1; i <= rows; i++) {
-//            HSSFRow row = sheet.getRow(i);
-//
-//            tokens.add(new TokenInfo());
-//        }
+        File file = new File(openPath);
+        // Read XSL file
+        FileInputStream inputStream = new FileInputStream(file);
+
+        // Get the workbook instance for XLS file
+        HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+
+        // Get first sheet from the workbook
+        HSSFSheet sheet = workbook.getSheetAt(0);
+        int rows = sheet.getLastRowNum();
+        List<TokenInfo> tokens = new ArrayList<>();
+        for (int i = 1; i <= rows; i++) {
+            HSSFRow row = sheet.getRow(i);
+            String tUserId = row.getCell(rowByType.get(secretCode)).getStringCellValue();
+            TokenType tTokenType = TokenType.valueOf(row.getCell(rowByType.get(weight)).getStringCellValue());
+            String tAssayer = row.getCell(rowByType.get(certifiedAssayer)).getStringCellValue();
+            String tCountry = row.getCell(rowByType.get(country)).getStringCellValue();
+            String tPurchaseDate = row.getCell(rowByType.get(purchaseDate)).getStringCellValue();
+            BigDecimal tDucValue = BigDecimal.valueOf(row.getCell(rowByType.get(ducValue)).getNumericCellValue());
+            BigDecimal tGoldPrice = BigDecimal.valueOf(row.getCell(rowByType.get(goldPrice)).getNumericCellValue());
+
+            tokens.add(new TokenInfo(tUserId, tTokenType, false, tAssayer, tCountry, tDucValue, tGoldPrice, tPurchaseDate));
+        }
+        tokenRepository.save(tokens);
+        inputStream.close();
+        // Write File
+        FileOutputStream out = new FileOutputStream(savePath);
+        workbook.write(out);
+        out.close();
+        //Delete old File
+        File fileForDelete = new File(openPath);
+        fileForDelete.delete();
     }
 
     public Set<String> generateUnique(int rows, int count) {

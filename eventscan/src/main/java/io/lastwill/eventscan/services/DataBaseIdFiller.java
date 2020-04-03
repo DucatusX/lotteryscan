@@ -6,7 +6,6 @@ import io.lastwill.eventscan.repositories.TokenEntryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.util.List;
 
 
-//@Component
 @Slf4j
 public class DataBaseIdFiller {
     @Autowired
