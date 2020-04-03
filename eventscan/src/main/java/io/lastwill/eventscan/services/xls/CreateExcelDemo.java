@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -36,8 +38,10 @@ public class CreateExcelDemo {
     private final String ducValue = "DUC value";
     @Value("${io.lastwill.eventscan.open-file-name}")
     private String openPath;
-    @Value("${io.lastwill.eventscan.save-file-name}")
+    @Value("${io.lastwill.eventscan.save-file-path}")
     private String savePath;
+    @Value("${io.lastwill.eventscan.save-file-name}")
+    private String saveName;
     Map<String, Integer> rowByType = new HashMap<>();
 
     private final int stopGenerate = 100;
@@ -48,6 +52,7 @@ public class CreateExcelDemo {
 
     @PostConstruct
     public void init() throws IOException {
+        System.out.println(System.getProperty("user.dir"));
         addSecretCode();
         saveIntoDb();
     }
@@ -168,14 +173,17 @@ public class CreateExcelDemo {
         log.info("All new Token Info entry successfully save into DB");
         inputStream.close();
         // Write File
-        FileOutputStream out = new FileOutputStream(savePath);
+        String newDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+        String saveFileName = savePath + File.separator + newDate + File.separator + saveName;
+        new File(savePath + File.separator + newDate).mkdirs();
+        FileOutputStream out = new FileOutputStream(saveFileName);
         workbook.write(out);
         out.close();
         //Delete old File
         File fileForDelete = new File(openPath);
         fileForDelete.delete();
-        log.info("New File with Secret code save into {}", savePath);
-        log.info("Old file was  dropped {}", savePath);
+        log.info("New File with Secret code save into {}", saveFileName);
+        log.info("Old file was  dropped {}", openPath);
     }
 
     public Set<String> generateUnique(int rows, int count) {
