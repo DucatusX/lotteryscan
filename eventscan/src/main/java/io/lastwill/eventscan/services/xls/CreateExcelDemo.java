@@ -21,7 +21,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Stream;
@@ -37,11 +36,9 @@ public class CreateExcelDemo {
     private final String goldPrice = "Gold price";
     private final String ducValue = "DUC value";
     @Value("${io.lastwill.eventscan.open-file-name}")
-    private String openPath;
-    @Value("${io.lastwill.eventscan.save-file-path}")
-    private String savePath;
+    private String openFile;
     @Value("${io.lastwill.eventscan.save-file-name}")
-    private String saveName;
+    private String saveFile;
     Map<String, Integer> rowByType = new HashMap<>();
 
     private final int stopGenerate = 100;
@@ -49,16 +46,16 @@ public class CreateExcelDemo {
     private RandomMd5Generator generator;
     @Autowired
     private TokenEntryRepository tokenRepository;
+    String homePath = System.getProperty("user.dir");
 
     @PostConstruct
     public void init() throws IOException {
-        System.out.println(System.getProperty("user.dir"));
         addSecretCode();
         saveIntoDb();
     }
 
     public void addSecretCode() throws IOException {
-        File file = new File(openPath);
+        File file = new File(homePath + File.separator + openFile);
         if (!file.exists()) {
             log.info("File for configure secret code is not exist");
             return;
@@ -141,7 +138,7 @@ public class CreateExcelDemo {
     }
 
     private void saveIntoDb() throws IOException {
-        File file = new File(openPath);
+        File file = new File(homePath + File.separator + openFile);
         if (!file.exists()) {
             log.info("File for saveDB is not exist");
             return;
@@ -174,16 +171,16 @@ public class CreateExcelDemo {
         inputStream.close();
         // Write File
         String newDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-        String saveFileName = savePath + File.separator + newDate + File.separator + saveName;
-        new File(savePath + File.separator + newDate).mkdirs();
+        String saveFileName = homePath + File.separator + newDate + File.separator + saveFile;
+        new File(homePath + File.separator + newDate).mkdirs();
         FileOutputStream out = new FileOutputStream(saveFileName);
         workbook.write(out);
         out.close();
         //Delete old File
-        File fileForDelete = new File(openPath);
+        File fileForDelete = new File(homePath + File.separator + openFile);
         fileForDelete.delete();
         log.info("New File with Secret code save into {}", saveFileName);
-        log.info("Old file was  dropped {}", openPath);
+        log.info("Old file was  dropped {}", homePath + File.separator + openFile);
     }
 
     public Set<String> generateUnique(int rows, int count) {
