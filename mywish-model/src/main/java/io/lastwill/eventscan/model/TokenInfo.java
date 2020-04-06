@@ -30,7 +30,7 @@ public class TokenInfo {
     private String ducatuAddress;
 
     @Column(name = "token_type")
-    private String tokenType;
+    private Integer tokenType;
 
     @Column(name = "certified_assayer")
     private String certifiedAssayer;
@@ -48,14 +48,14 @@ public class TokenInfo {
 
     private Boolean isActive;
 
-    public TokenInfo(String userId, TokenType type, Boolean isActive) {
+    public TokenInfo(String userId, Integer tokenType, Boolean isActive) {
         this.userId = userId;
-        this.tokenType = type.getName();
+        this.tokenType = tokenType;
         this.isActive = isActive;
     }
 
     public TokenInfo(String userId,
-                     TokenType type,
+                     Integer tokenType,
                      Boolean isActive,
                      String certifiedAssayer,
                      String country,
@@ -63,7 +63,7 @@ public class TokenInfo {
                      BigDecimal goldPrice,
                      String purchaseDate) {
         this.userId = userId;
-        this.tokenType = type.getName();
+        this.tokenType = tokenType;
         this.isActive = isActive;
         this.certifiedAssayer = certifiedAssayer;
         this.country = country;

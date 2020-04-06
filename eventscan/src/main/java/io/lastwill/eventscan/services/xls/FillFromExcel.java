@@ -1,7 +1,6 @@
 package io.lastwill.eventscan.services.xls;
 
 import io.lastwill.eventscan.model.TokenInfo;
-import io.lastwill.eventscan.model.TokenType;
 import io.lastwill.eventscan.repositories.TokenEntryRepository;
 import io.lastwill.eventscan.services.RandomMd5Generator;
 import lombok.extern.slf4j.Slf4j;
@@ -23,15 +22,15 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Component
 @Slf4j
-public class CreateExcelDemo {
-    private final String weight = "Weight";
+public class FillFromExcel {
+    private final String weight = "Weight, gram";
     private final String country = "Country";
     private final String certifiedAssayer = "Certified Assayer";
-    private final String purchaseDate = "Purchase date";
+    private final String productionDate = "Production Date";
+    private final String purchaseDate = "Purchase Date";
     private final String secretCode = "Secret Code";
     private final String goldPrice = "Gold price";
     private final String ducValue = "DUC value";
@@ -54,10 +53,10 @@ public class CreateExcelDemo {
         saveIntoDb();
     }
 
-    public void addSecretCode() throws IOException {
+    private void addSecretCode() throws IOException {
         File file = new File(homePath + File.separator + openFile);
         if (!file.exists()) {
-            log.info("File for configure secret code is not exist");
+            log.info("File {} for configure secret code is not exist", homePath + File.separator + openFile);
             return;
         }
         // Read XSL file
@@ -156,8 +155,7 @@ public class CreateExcelDemo {
         for (int i = 1; i <= rows; i++) {
             HSSFRow row = sheet.getRow(i);
             String tUserId = row.getCell(rowByType.get(secretCode)).getStringCellValue();
-            String tokenName = row.getCell(rowByType.get(weight)).getStringCellValue();
-            TokenType tTokenType = Stream.of(TokenType.values()).filter(t -> t.getName().equalsIgnoreCase(tokenName)).findFirst().get();
+            Integer tTokenType = (int) row.getCell(rowByType.get(weight)).getNumericCellValue();
             String tAssayer = row.getCell(rowByType.get(certifiedAssayer)).getStringCellValue();
             String tCountry = row.getCell(rowByType.get(country)).getStringCellValue();
             String tPurchaseDate = row.getCell(rowByType.get(purchaseDate)).getStringCellValue();
@@ -183,7 +181,7 @@ public class CreateExcelDemo {
         log.info("Old file was  dropped {}", homePath + File.separator + openFile);
     }
 
-    public Set<String> generateUnique(int rows, int count) {
+    private Set<String> generateUnique(int rows, int count) {
         Set<String> result = new HashSet<>();
         if (count > stopGenerate) {
             log.warn("Can't generate unique code more than {} times", stopGenerate);

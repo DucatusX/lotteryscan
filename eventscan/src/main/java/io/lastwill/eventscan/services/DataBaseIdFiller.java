@@ -1,7 +1,6 @@
 package io.lastwill.eventscan.services;
 
 import io.lastwill.eventscan.model.TokenInfo;
-import io.lastwill.eventscan.model.TokenType;
 import io.lastwill.eventscan.repositories.TokenEntryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +38,11 @@ public class DataBaseIdFiller {
         }
         log.info("Token DB is empty start filling");
         generator.generateMoreMd5Random(eightGramValue).forEach(userId -> {
-            tokenRepository.save(new TokenInfo(userId, TokenType.SMALL, false));
+            tokenRepository.save(new TokenInfo(userId, 8, false));
         });
 
         generator.generateMoreMd5Random(tenGramValue).forEach(userId -> {
-            tokenRepository.save(new TokenInfo(userId, TokenType.BIG, false));
+            tokenRepository.save(new TokenInfo(userId, 10, false));
         });
         log.info("Token DB filling completed!");
         writeOnFile();
@@ -56,7 +55,7 @@ public class DataBaseIdFiller {
         smallFile.delete();
         if (smallFile.createNewFile()) {
             try (FileWriter writer = new FileWriter(smallFile, true)) {
-                List<String> allTokens = tokenRepository.findAllIdByTokenType(TokenType.SMALL.getName());
+                List<String> allTokens = tokenRepository.findAllIdByTokenType(8);
                 allTokens.forEach(id -> {
                     try {
                         writer.write(id);
@@ -75,7 +74,7 @@ public class DataBaseIdFiller {
         bigFile.delete();
         if (bigFile.createNewFile()) {
             try (FileWriter writer = new FileWriter(bigFile, true)) {
-                List<String> allTokens = tokenRepository.findAllIdByTokenType(TokenType.BIG.getName());
+                List<String> allTokens = tokenRepository.findAllIdByTokenType(8);
                 allTokens.forEach(id -> {
                     try {
                         writer.write(id);
