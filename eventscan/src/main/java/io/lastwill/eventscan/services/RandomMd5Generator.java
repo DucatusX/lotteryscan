@@ -4,8 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -18,7 +17,7 @@ public class RandomMd5Generator {
      * @param generateValue - value of MD5
      * @return Set of MD5
      */
-    public Set<String> generateMoreMd5Random(int generateValue) {
+    public Map<String, String> generateMoreMd5Random(int generateValue) {
         return this.generateMoreMd5Random(generateValue, 0);
     }
 
@@ -40,13 +39,24 @@ public class RandomMd5Generator {
         return DigestUtils.md5Hex(builder.toString());
     }
 
-    private Set<String> generateMoreMd5Random(int generateValue, int countGenerate) {
-        Set<String> result = new HashSet<>();
+    public String generatePublic(String secret) {
+        String md5 = DigestUtils.md5Hex(secret);
+        char[] array = md5.toCharArray();
+        array[0] = 'p';
+        array[1] = 'u';
+        array[2] = 'b';
+        return String.valueOf(array);
+    }
+
+    private Map<String, String> generateMoreMd5Random(int generateValue, int countGenerate) {
+        Map<String, String> result = new HashMap<>();
         if (generateValue >= 0) {
             for (int i = 0; i < generateValue; i++) {
-                result.add(this.generateMd5Random());
+                String secretCode = this.generateMd5Random();
+                result.put(this.generateMd5Random(), generatePublic(secretCode));
             }
-            if (result.size() < generateValue) {
+            Set<String> pubCodes = new HashSet<>(result.values());
+            if (result.size() < generateValue || pubCodes.size() != result.size()) {
                 if (countGenerate >= MAX_TRY_GENERATE) {
                     log.info("Try generate id more than {}. Can't generate with unique", MAX_TRY_GENERATE);
                     result.clear();

@@ -18,8 +18,11 @@ public class TokenInfo {
     @Getter
     private Long id;
 
-    @Column(name = "user_id", unique = true)
-    private String userId;
+    @Column(name = "secret_code", unique = true)
+    private String secretCode;
+
+    @Column(name = "public_code", unique = true)
+    private String publicCode;
 
     @Setter
     @Column(name = "ducatusx_address")
@@ -48,13 +51,8 @@ public class TokenInfo {
 
     private Boolean isActive;
 
-    public TokenInfo(String userId, Integer tokenType, Boolean isActive) {
-        this.userId = userId;
-        this.tokenType = tokenType;
-        this.isActive = isActive;
-    }
-
-    public TokenInfo(String userId,
+    public TokenInfo(String secretCode,
+                     String publicCode,
                      Integer tokenType,
                      Boolean isActive,
                      String certifiedAssayer,
@@ -62,7 +60,8 @@ public class TokenInfo {
                      BigDecimal ducValue,
                      BigDecimal goldPrice,
                      String purchaseDate) {
-        this.userId = userId;
+        this.secretCode = secretCode;
+        this.publicCode = publicCode;
         this.tokenType = tokenType;
         this.isActive = isActive;
         this.certifiedAssayer = certifiedAssayer;

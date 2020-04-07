@@ -32,6 +32,7 @@ public class FillFromExcel {
     private final String productionDate = "Production Date";
     private final String purchaseDate = "Purchase Date";
     private final String secretCode = "Secret Code";
+    private final String publicCode = "Public Code";
     private final String goldPrice = "Gold price";
     private final String ducValue = "DUC value";
     @Value("${io.lastwill.eventscan.open-file-name}")
@@ -69,7 +70,7 @@ public class FillFromExcel {
         HSSFSheet sheet = workbook.getSheetAt(0);
         Iterator<Row> rowIterator = sheet.iterator();
         int rows = sheet.getLastRowNum();
-        Set<String> uniqueCodes = generateUnique(rows, 0);
+        Map<String, String> uniqueCodes = generateUnique(rows, 0);
         if (uniqueCodes.isEmpty()) {
             log.warn("Can't generate {} unique codes!", rows);
             return;
@@ -107,24 +108,37 @@ public class FillFromExcel {
                     rowByType.put(ducValue, cell.getColumnIndex());
                     break;
                 }
+                case publicCode: {
+                    rowByType.put(publicCode, cell.getColumnIndex());
+                    break;
+                }
                 default:
                     break;
             }
         }
-        if (rowByType.size() != 7) {
+        if (rowByType.size() != 8) {
             log.warn("Find only fields {}", rowByType.size());
             return;
         }
-        Iterator<String> codeIterator = uniqueCodes.iterator();
+        Set<Map.Entry<String, String>> entrySet = uniqueCodes.entrySet();
+        Iterator<Map.Entry<String, String>> codeIterator = entrySet.iterator();
         for (int i = 1; i <= rows; i++) {
             if (!codeIterator.hasNext()) {
                 return;
             }
-            String code = codeIterator.next();
-            int secretCell = rowByType.get(secretCode);
+            Map.Entry<String, String> entry = codeIterator.next();
+            String code = entry.getKey();
+            String pubCode = entry.getValue();
+
+            int secretCell = rowByType.get(this.secretCode);
+            int publicCell = rowByType.get(this.publicCode);
             Row row = sheet.getRow(i);
+
             Cell cell = row.createCell(secretCell, CellType.STRING);
             cell.setCellValue(code);
+
+            cell = row.createCell(publicCell, CellType.STRING);
+            cell.setCellValue(pubCode);
 
         }
         log.info("Secret code successfully generate");
@@ -154,7 +168,8 @@ public class FillFromExcel {
         List<TokenInfo> tokens = new ArrayList<>();
         for (int i = 1; i <= rows; i++) {
             HSSFRow row = sheet.getRow(i);
-            String tUserId = row.getCell(rowByType.get(secretCode)).getStringCellValue();
+            String tSecretCode = row.getCell(rowByType.get(secretCode)).getStringCellValue();
+            String tPublicCode = row.getCell(rowByType.get(publicCode)).getStringCellValue();
             Integer tTokenType = (int) row.getCell(rowByType.get(weight)).getNumericCellValue();
             String tAssayer = row.getCell(rowByType.get(certifiedAssayer)).getStringCellValue();
             String tCountry = row.getCell(rowByType.get(country)).getStringCellValue();
@@ -162,7 +177,7 @@ public class FillFromExcel {
             BigDecimal tDucValue = BigDecimal.valueOf(row.getCell(rowByType.get(ducValue)).getNumericCellValue());
             BigDecimal tGoldPrice = BigDecimal.valueOf(row.getCell(rowByType.get(goldPrice)).getNumericCellValue());
 
-            tokens.add(new TokenInfo(tUserId, tTokenType, false, tAssayer, tCountry, tDucValue, tGoldPrice, tPurchaseDate));
+            tokens.add(new TokenInfo(tSecretCode, tPublicCode, tTokenType, false, tAssayer, tCountry, tDucValue, tGoldPrice, tPurchaseDate));
         }
         tokenRepository.save(tokens);
         log.info("All new Token Info entry successfully save into DB");
@@ -181,15 +196,16 @@ public class FillFromExcel {
         log.info("Old file was  dropped {}", homePath + File.separator + openFile);
     }
 
-    private Set<String> generateUnique(int rows, int count) {
-        Set<String> result = new HashSet<>();
+    private Map<String, String> generateUnique(int rows, int count) {
+        Map<String, String> result = new HashMap<>();
         if (count > stopGenerate) {
             log.warn("Can't generate unique code more than {} times", stopGenerate);
             return result;
         }
-        Set<String> codes = generator.generateMoreMd5Random(rows);
-        List<TokenInfo> repeats = tokenRepository.findAllBySecretCode(codes);
-        if (repeats != null && repeats.size() > 0) {
+        Map<String, String> codes = generator.generateMoreMd5Random(rows);
+        List<TokenInfo> repeatsPrivate = tokenRepository.findAllBySecretCode(codes.keySet());
+        List<TokenInfo> repeatsPublic = tokenRepository.findAllByPublicCode(codes.values());
+        if (repeatsPrivate != null && (repeatsPrivate.size() > 0 || repeatsPublic.size() > 0)) {
             result = this.generateUnique(rows, ++count);
         } else {
             result = codes;
