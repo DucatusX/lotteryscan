@@ -49,6 +49,9 @@ public class TokenInfo {
     @Column(name = "purchase_date")
     private String purchaseDate;
 
+    @Column(name = "production_date")
+    private String productionDate;
+
     private Boolean isActive;
 
     public TokenInfo(String secretCode,
@@ -59,7 +62,8 @@ public class TokenInfo {
                      String country,
                      BigDecimal ducValue,
                      BigDecimal goldPrice,
-                     String purchaseDate) {
+                     String purchaseDate,
+                     String productionDate) {
         this.secretCode = secretCode;
         this.publicCode = publicCode;
         this.tokenType = tokenType;
@@ -69,5 +73,6 @@ public class TokenInfo {
         this.ducValue = ducValue;
         this.goldPrice = goldPrice;
         this.purchaseDate = purchaseDate;
+        this.productionDate = productionDate;
     }
 }

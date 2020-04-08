@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -100,6 +101,10 @@ public class FillFromExcel {
                     rowByType.put(purchaseDate, cell.getColumnIndex());
                     break;
                 }
+                case productionDate: {
+                    rowByType.put(productionDate, cell.getColumnIndex());
+                    break;
+                }
                 case goldPrice: {
                     rowByType.put(goldPrice, cell.getColumnIndex());
                     break;
@@ -116,7 +121,7 @@ public class FillFromExcel {
                     break;
             }
         }
-        if (rowByType.size() != 8) {
+        if (rowByType.size() != 9) {
             log.warn("Find only fields {}", rowByType.size());
             return;
         }
@@ -174,10 +179,12 @@ public class FillFromExcel {
             String tAssayer = row.getCell(rowByType.get(certifiedAssayer)).getStringCellValue();
             String tCountry = row.getCell(rowByType.get(country)).getStringCellValue();
             String tPurchaseDate = row.getCell(rowByType.get(purchaseDate)).getStringCellValue();
-            BigDecimal tDucValue = BigDecimal.valueOf(row.getCell(rowByType.get(ducValue)).getNumericCellValue());
+            String tProductionDate = row.getCell(rowByType.get(productionDate)).getStringCellValue();
+            BigDecimal tDucValueInPercent = BigDecimal.valueOf(row.getCell(rowByType.get(ducValue)).getNumericCellValue());
+            BigDecimal tDucValue = tDucValueInPercent.divide(new BigDecimal(100));
             BigDecimal tGoldPrice = BigDecimal.valueOf(row.getCell(rowByType.get(goldPrice)).getNumericCellValue());
 
-            tokens.add(new TokenInfo(tSecretCode, tPublicCode, tTokenType, false, tAssayer, tCountry, tDucValue, tGoldPrice, tPurchaseDate));
+            tokens.add(new TokenInfo(tSecretCode, tPublicCode, tTokenType, false, tAssayer, tCountry, tDucValue, tGoldPrice, tPurchaseDate, tProductionDate));
         }
         tokenRepository.save(tokens);
         log.info("All new Token Info entry successfully save into DB");
