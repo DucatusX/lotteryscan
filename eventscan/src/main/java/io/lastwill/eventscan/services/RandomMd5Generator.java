@@ -10,6 +10,7 @@ import java.util.*;
 @Slf4j
 public class RandomMd5Generator {
     private static int MAX_TRY_GENERATE = 100;
+    private final int multiplicity = 4;
 
     /**
      * Generate a certain value of random MD5
@@ -29,6 +30,7 @@ public class RandomMd5Generator {
      * @return String random MD5.
      */
     public String generateMd5Random() {
+        String result = "";
         char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         int random;
         StringBuilder builder = new StringBuilder();
@@ -36,16 +38,21 @@ public class RandomMd5Generator {
             random = (int) (Math.random() * alphabet.length);
             builder.append(alphabet[random]);
         }
-        return DigestUtils.md5Hex(builder.toString());
+        result = DigestUtils.md5Hex(builder.toString());
+        result.toUpperCase();
+        return result;
     }
 
     public String generatePublic(String secret) {
         String md5 = DigestUtils.md5Hex(secret);
+        String result = "";
         char[] array = md5.toCharArray();
         array[0] = 'p';
         array[1] = 'u';
         array[2] = 'b';
-        return String.valueOf(array);
+        result = String.valueOf(array);
+        result.toUpperCase();
+        return result;
     }
 
     private Map<String, String> generateMoreMd5Random(int generateValue, int countGenerate) {
@@ -68,4 +75,35 @@ public class RandomMd5Generator {
         }
         return result;
     }
+
+    public String convertToUserFriendlyFormat(String prototype) {
+        int start = 0;
+        int iter = 0;
+        int stop = multiplicity;
+        char[] arrayPrototype = prototype.toCharArray();
+        if (arrayPrototype.length % multiplicity != 0) {
+            throw new RuntimeException("Code length = " + arrayPrototype.length);
+        }
+
+        StringBuilder builder = new StringBuilder();
+        while (builder.length() - iter < arrayPrototype.length - 1) {
+            builder.append(Arrays.copyOfRange(arrayPrototype, start, stop));
+            iter++;
+            start = stop;
+            stop += multiplicity;
+            if (builder.length() - iter != arrayPrototype.length - 1) {
+                builder.append("-");
+            }
+        }
+        String result = builder.toString();
+        result = result.toUpperCase();
+        return result;
+    }
+
+    public String convertToDBFormat(String prototype) {
+        String result = prototype.toUpperCase();
+        result = result.replace("-", "");
+        return result;
+    }
+
 }

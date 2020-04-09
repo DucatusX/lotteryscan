@@ -20,7 +20,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -132,8 +131,8 @@ public class FillFromExcel {
                 return;
             }
             Map.Entry<String, String> entry = codeIterator.next();
-            String code = entry.getKey();
-            String pubCode = entry.getValue();
+            String code = generator.convertToUserFriendlyFormat(entry.getKey());
+            String pubCode = generator.convertToUserFriendlyFormat(entry.getValue());
 
             int secretCell = rowByType.get(this.secretCode);
             int publicCell = rowByType.get(this.publicCode);
@@ -174,7 +173,9 @@ public class FillFromExcel {
         for (int i = 1; i <= rows; i++) {
             HSSFRow row = sheet.getRow(i);
             String tSecretCode = row.getCell(rowByType.get(secretCode)).getStringCellValue();
+            tSecretCode = generator.convertToDBFormat(tSecretCode);
             String tPublicCode = row.getCell(rowByType.get(publicCode)).getStringCellValue();
+            tPublicCode = generator.convertToDBFormat(tPublicCode);
             Integer tTokenType = (int) row.getCell(rowByType.get(weight)).getNumericCellValue();
             String tAssayer = row.getCell(rowByType.get(certifiedAssayer)).getStringCellValue();
             String tCountry = row.getCell(rowByType.get(country)).getStringCellValue();
